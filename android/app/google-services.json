@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613571527049",
+    "project_id": "issue-reporting-app-d2dca",
+    "storage_bucket": "issue-reporting-app-d2dca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613571527049:android:f37ad051772dc9921f6158",
+        "android_client_info": {
+          "package_name": "com.example.issue_detection_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQvcDyrqA_lYXvU-4tksEWItPowsoBF-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

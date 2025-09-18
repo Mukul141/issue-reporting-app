@@ -1,37 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/report_model.dart'; // Import the model we just created
+import '../models/report_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // 1. Method to add a new report
-  Future<void> addReport(Report report) async {
-    try {
-      // Access the 'reports' collection and add a new document
-      // using the toMap() method from our Report model
-      await _db.collection('reports').add(report.toMap());
-    } catch (e) {
-      // It's good practice to handle potential errors
-      print('Error adding report: $e');
-      rethrow; // Rethrow the error to be handled by the UI
+  // Helper function to define the custom sort order
+  int _getSortPriority(String status) {
+    switch (status) {
+      case 'In Progress':
+        return 0; // Highest priority
+      case 'Submitted':
+        return 1;
+      case 'Resolved':
+        return 2;
+      default:
+        return 3; // Lowest priority (e.g., 'Pending Sync')
     }
   }
 
-  // 2. Method to get a real-time stream of reports for a user
   Stream<List<Report>> getReportsForUser(String userId) {
     return _db
         .collection('reports')
-    // Query the collection to find documents where 'userId' matches
         .where('userId', isEqualTo: userId)
-    // Order the reports by timestamp to show the newest first
-        .orderBy('timestamp', descending: true)
-    // snapshots() returns a Stream for real-time updates
+        .orderBy('timestamp', descending: true) // Primary sort by date from Firebase
         .snapshots()
         .map((snapshot) {
-      // For each document snapshot, convert it to a Report object
-      return snapshot.docs
+      final reports = snapshot.docs
           .map((doc) => Report.fromFirestore(doc as DocumentSnapshot<Map<String, dynamic>>))
           .toList();
+
+      // Apply our custom sort logic to the list
+      reports.sort((a, b) {
+        final priorityA = _getSortPriority(a.status);
+        final priorityB = _getSortPriority(b.status);
+        // Compare by status priority. If priorities are the same,
+        // the original date sorting from the query is maintained.
+        return priorityA.compareTo(priorityB);
+      });
+
+      return reports;
     });
+  }
+
+  // Other methods like addReport and saveUserToken remain the same
+  Future<void> addReport(Report report) async {
+    // ... your existing addReport code ...
+  }
+
+  Future<void> saveUserToken(String userId, String token) async {
+    // ... your existing saveUserToken code ...
   }
 }

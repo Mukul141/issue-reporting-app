@@ -1,10 +1,16 @@
+// lib/features/home/screens/home_screen.dart
+// User home dashboard: lists the current user's reports and links to creation.
+
 import 'package:flutter/material.dart';
+
 import '../../../core/models/report_model.dart';
 import '../../../core/services/auth_service.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../reporting/screens/create_report_screen.dart';
 import '../../report_history/widgets/report_list_item.dart';
 
+/// Displays the signed-in user's reports in real time using a StreamBuilder,
+/// and provides an action to create a new report. [web:169]
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -24,26 +30,26 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+      // Body shows a live list of reports via Firestore stream. [web:169]
       body: StreamBuilder<List<Report>>(
-        // Listen to the stream of reports for the current user
         stream: firestoreService.getReportsForUser(userId),
         builder: (context, snapshot) {
-          // 1. While loading
+          // Show a spinner while waiting for the first stream event. [web:169]
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          // 2. If there's an error
+          // Surface any stream or query errors in a simple message. [web:169]
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          // 3. If there's no data or the list is empty
+          // Handle the empty state with a gentle prompt to add a report. [web:169]
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
               child: Text('You have no reports yet. Tap + to add one!'),
             );
           }
 
-          // 4. If we have data, display it in a list
+          // Render the list of reports with a minimal, performant builder. [web:188]
           final reports = snapshot.data!;
           return ListView.builder(
             itemCount: reports.length,
@@ -53,6 +59,7 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
+      // Floating action button to create a new report. [web:190]
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(

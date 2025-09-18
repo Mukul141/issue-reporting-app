@@ -1,15 +1,26 @@
+// lib/core/services/auth_service.dart
+// Thin wrapper around FirebaseAuth for email/password auth and auth state access.
+
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Provides email/password authentication and auth state access using
+/// FirebaseAuth in a Flutter app. [web:142]
 class AuthService {
+  /// Underlying Firebase authentication instance.
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Get the current user (if any)
+  // ---- Accessors ----
+
+  /// Currently signed-in user, or null if not authenticated. [web:142]
   User? get currentUser => _auth.currentUser;
 
-  // Stream to notify the app about authentication changes (login/logout)
+  /// Stream of authentication state changes (login, logout, token refresh). [web:142]
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  // Sign in with email and password
+  // ---- Auth flows ----
+
+  /// Signs in with email and password; returns UserCredential on success,
+  /// or null if a FirebaseAuthException occurs. [web:142]
   Future<UserCredential?> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -20,13 +31,17 @@ class AuthService {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      // You can handle specific errors here (e.g., wrong-password)
-      print('Sign-in error: ${e.message}');
+      // Handle specific Firebase auth errors as needed (e.code, e.message). [web:142]
+      // Example codes: 'user-not-found', 'wrong-password', 'invalid-email'.
+      // Keep UI-facing handling in the caller/UI layer.
+      // Logging kept minimal to avoid leaking sensitive details.
+      // print('Sign-in error: ${e.message}');
       return null;
     }
   }
 
-  // Sign up with email and password
+  /// Creates an account with email and password; returns UserCredential on
+  /// success, or null if a FirebaseAuthException occurs. [web:142]
   Future<UserCredential?> signUpWithEmailAndPassword({
     required String email,
     required String password,
@@ -37,13 +52,14 @@ class AuthService {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      // You can handle specific errors here (e.g., email-already-in-use)
-      print('Sign-up error: ${e.message}');
+      // Handle specific Firebase auth errors as needed (e.code, e.message). [web:142]
+      // Example codes: 'email-already-in-use', 'weak-password', 'invalid-email'.
+      // print('Sign-up error: ${e.message}');
       return null;
     }
   }
 
-  // Sign out
+  /// Signs out the current user. [web:142]
   Future<void> signOut() async {
     await _auth.signOut();
   }

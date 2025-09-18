@@ -1,8 +1,14 @@
+// lib/features/report_history/widgets/report_list_item.dart
+// Compact list tile for a report: category, date, status chip, and tap-to-view.
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Add 'intl' package to pubspec.yaml for date formatting
+import 'package:intl/intl.dart';
+
 import '../../../core/models/report_model.dart';
 import '../screens/report_details_screen.dart';
 
+/// Displays a single report row with category, formatted date, and a colored
+/// status chip; navigates to details on tap. [web:102]
 class ReportListItem extends StatelessWidget {
   final Report report;
 
@@ -15,7 +21,9 @@ class ReportListItem extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.description, color: Colors.blue),
         title: Text(report.category),
+        // Uses intl DateFormat for locale-aware display. [web:198]
         subtitle: Text(DateFormat.yMMMd().format(report.timestamp.toDate())),
+        // Material Chip conveys status with a background color. [web:200]
         trailing: Chip(
           label: Text(
             report.status,
@@ -34,6 +42,9 @@ class ReportListItem extends StatelessWidget {
     );
   }
 
+  // ---- UI helpers ----
+
+  /// Maps a status string to a representative color used by the trailing chip. [web:200]
   Color _getStatusColor(String status) {
     switch (status) {
       case 'Submitted':

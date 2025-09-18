@@ -1,7 +1,13 @@
+// lib/features/auth/screens/login_screen.dart
+// Email/password login form with validation and a link to the sign-up flow.
+
 import 'package:flutter/material.dart';
 import 'package:issue_detection_app/features/auth/screens/signup_screen.dart';
+
 import '../../../core/services/auth_service.dart';
 
+/// Presents a simple email/password sign-in form and navigates to sign-up when
+/// requested; on successful sign-in, the AuthWrapper reacts via authStateChanges. [web:163]
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -10,39 +16,44 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // A key to identify and validate our form
+  // ---- Form state ----
+
+  /// Key used to validate and manage the form state. [web:172]
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers to manage the text in the input fields
+  /// Controllers for email and password input fields.
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Service to handle authentication logic
+  /// Authentication service wrapper around FirebaseAuth.
   final _authService = AuthService();
 
-  // To manage the loading state
+  /// Indicates whether a sign-in is currently in progress.
   bool _isLoading = false;
 
   @override
   void dispose() {
-    // Clean up the controllers when the widget is removed
+    // Dispose controllers to free resources when the widget is removed. [web:117]
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  // ---- Actions ----
+
+  /// Validates inputs, attempts sign-in, and shows a message on failure.
+  /// On success, navigation is handled by the auth wrapper reacting to auth state. [web:163]
   Future<void> _signIn() async {
-    // First, validate the form inputs
+    // Validate form fields before attempting sign-in. [web:172]
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Call the sign-in method from our auth service
       final userCredential = await _authService.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // If sign-in fails, show an error message
+      // If sign-in fails, surface a brief error message.
       if (userCredential == null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -51,14 +62,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
-      // On success, the AuthWrapper will automatically navigate to HomeScreen.
-      // We just need to stop the loading indicator.
 
+      // Stop the loading indicator; route changes are handled by AuthWrapper. [web:163]
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
   }
+
+  // ---- UI ----
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: _formKey, // Enables validation across fields. [web:172]
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Email field with basic non-empty validation. [web:172]
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
@@ -84,6 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 16),
+
+              // Password field with basic non-empty validation. [web:172]
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
@@ -96,12 +111,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 24),
+
+              // Submit button shows a spinner while signing in. [web:172]
               ElevatedButton(
                 onPressed: _isLoading ? null : _signIn,
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text('Sign In'),
               ),
+
+              // Link to the sign-up screen for new users.
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -109,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 child: const Text('Don\'t have an account? Sign Up'),
-              )
+              ),
             ],
           ),
         ),

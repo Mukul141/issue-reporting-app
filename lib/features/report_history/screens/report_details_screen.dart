@@ -1,7 +1,13 @@
+// lib/features/report_history/screens/report_details_screen.dart
+// Detailed view for a single report: status chip, images carousel, and fields.
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../../core/models/report_model.dart';
 
+/// Shows a detailed view of a [Report], including status, images, timestamps,
+/// location, and assigned department. [web:200]
 class ReportDetailsScreen extends StatelessWidget {
   final Report report;
 
@@ -18,17 +24,20 @@ class ReportDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status Chip
+            // Status chip indicating the current workflow state. [web:200]
             Chip(
               label: Text(
                 report.status,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               backgroundColor: _getStatusColor(report.status),
             ),
             const SizedBox(height: 16),
 
-            // Image Section
+            // Images
             _buildSectionTitle('Images'),
             if (report.imageUrls.isNotEmpty)
               SizedBox(
@@ -49,11 +58,18 @@ class ReportDetailsScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Details Section
+            // Details
             _buildSectionTitle('Details'),
-            _buildDetailRow('Reported on:', DateFormat.yMMMd().add_jm().format(report.timestamp.toDate())),
+            _buildDetailRow(
+              'Reported on:',
+              DateFormat.yMMMd().add_jm().format(report.timestamp.toDate()),
+            ), // Uses intl DateFormat for locale-aware formatting. [web:198]
             _buildDetailRow('Description:', report.description),
-            _buildDetailRow('Location:', '${report.location.latitude.toStringAsFixed(5)}, ${report.location.longitude.toStringAsFixed(5)}'),
+            _buildDetailRow(
+              'Location:',
+              '${report.location.latitude.toStringAsFixed(5)}, '
+                  '${report.location.longitude.toStringAsFixed(5)}',
+            ),
             _buildDetailRow('Assigned To:', report.department),
           ],
         ),
@@ -61,7 +77,9 @@ class ReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Helper widget for section titles
+  // ---- UI helpers ----
+
+  /// Section header used to group content blocks. [web:102]
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
@@ -72,27 +90,33 @@ class ReportDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Helper widget for detail rows
+  /// Labeled key-value row for report fields. [web:102]
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+          Text(label,
+              style:
+              const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
           Text(value),
         ],
       ),
     );
   }
 
-  // Helper function to get status color
+  /// Maps a status string to a representative color for the status chip. [web:200]
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'Submitted': return Colors.orange;
-      case 'In Progress': return Colors.blue;
-      case 'Resolved': return Colors.green;
-      default: return Colors.grey;
+      case 'Submitted':
+        return Colors.orange;
+      case 'In Progress':
+        return Colors.blue;
+      case 'Resolved':
+        return Colors.green;
+      default:
+        return Colors.grey;
     }
   }
 }

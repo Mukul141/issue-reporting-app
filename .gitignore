@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# --- ADD THIS SECTION ---
+# Sensitive or auto-generated config files
+lib/firebase_options.dart

@@ -45,5 +45,7 @@ app.*.map.json
 /android/app/release
 
 # --- ADD THIS SECTION ---
-# Sensitive or auto-generated config files
+# Sensitive or auto-generated Firebase config files
 lib/firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist

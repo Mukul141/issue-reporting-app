@@ -22,8 +22,11 @@ It’s built with Flutter and Firebase for fast development, real-time updates, 
 
 ## Screenshots
 
-- Add 3–5 screenshots or a short GIF: Login, Home (list), Create Report, Details with status chip.
-- Tip: Save images in a `docs/` or `assets/screenshots/` folder and reference them here.
+<p align="center">
+  <img src="resources/mobile_app_login screen.png" width="250" />
+  <img src="resources/mobile_app_homescreen.png" width="250" />
+  <img src="resources/mobile_app_create_report_screen.png" width="250" />
+</p>
 
 ---
 
@@ -149,7 +152,6 @@ This generates a new `lib/firebase_options.dart` tied to your Firebase project.
 * Leaderboard with points for active reporters.
 * Push notifications on status changes via Firebase Cloud Messaging.
 * Map view with clustered issue markers.
-* Admin panel for assignments and analytics.
 
 ---
 

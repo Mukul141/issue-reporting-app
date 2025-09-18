@@ -149,11 +149,31 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
                 validator: (value) => value == null ? 'Please select a category' : null,
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 4,
-                validator: (value) => value == null || value.isEmpty ? 'Please enter a description' : null,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1. A separate Text widget for the label
+                  Text(
+                    'Description',
+                    style: TextStyle(
+                      color: Theme.of(context).hintColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // 2. The TextFormField with a hint and a border, but no label
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter a detailed description of the issue...',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    maxLines: 4,
+                    validator: (value) =>
+                    value == null || value.isEmpty ? 'Please enter a description' : null,
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               OutlinedButton.icon(
